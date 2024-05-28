@@ -1,17 +1,19 @@
 import express from "express";
-import startServer from "./Apollo";
-
+import startGraphqlServer from "./Apollo";
+import dotenv from "dotenv";
+import connectMongoDB from "./db/connectDB";
+dotenv.config();
 const app = express();
-const port = process.env.SERVER_PORT ?? 8000;
+const port = process.env.SERVER_PORT;
 
-app.get("/", (req, res) => {
-  res.send("Hello, TypeScript with Express!");
-});
+(async function () {
+  app.get("/", (req, res) => {
+    res.send("Hello, This is Express server!");
+  });
 
-startServer().catch((error) => {
-  console.error("Error starting the server:", error);
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+  await startGraphqlServer();
+  await connectMongoDB();
+  app.listen(port, () => {
+    console.log(`Express Server is running on http://localhost:${port}`);
+  });
+})();
